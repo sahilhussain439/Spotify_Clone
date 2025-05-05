@@ -1,0 +1,285 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Login</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'marshmello_favicon.png' %}">
+    <style>
+        body {
+        /* Gradient overlay + background image */
+        background: 
+            linear-gradient(120deg, rgba(29,185,84,0.7) 0%, rgba(18,18,18,0.7) 100%),
+            url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Montserrat', Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Animate gradient overlay */
+        animation: gradientMove 10s ease-in-out infinite alternate;
+    }
+    @keyframes gradientMove {
+        0% {
+            background-position: 0% 50%, center;
+        }
+        100% {
+            background-position: 100% 50%, center;
+        }
+    }
+    .login-modal {
+        background: rgba(18, 18, 18, 0.55);
+        backdrop-filter: blur(18px) saturate(140%);
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+        padding: 36px 32px 24px 32px;
+        width: 370px;
+        max-width: 95vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1.5px solid rgba(255,255,255,0.18);
+    }
+        .spotify-logo {
+            width: 51px;
+            margin-bottom: 20px;
+        }
+        .login-title {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .login-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .form-label {
+            color: #b3b3b3;
+            font-size: 0.97rem;
+            margin-bottom: 2px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 4px;
+            border: none;
+            background: #282828;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .form-input:focus {
+            outline: 2px solid #1db954;
+        }
+        .password-row {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #b3b3b3;
+            font-size: 1.1rem;
+        }
+        .forgot-link {
+            color: #b3b3b3;
+            text-decoration: underline;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .remember-switch {
+            width: 38px;
+            height: 20px;
+            background: #404040;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .remember-switch.active {
+            background: #1db954;
+        }
+        .remember-dot {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            transition: left 0.2s;
+        }
+        .remember-switch.active .remember-dot {
+            left: 20px;
+        }
+        .remember-label {
+            color: #b3b3b3;
+            font-size: 0.95rem;
+        }
+        .login-btn {
+            background: #1db954;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            letter-spacing: 2px;
+            transition: background 0.2s;
+        }
+        .login-btn:hover {
+            background: #1ed760;
+        }
+        .divider {
+            width: 100%;
+            text-align: center;
+            color: #b3b3b3;
+            margin: 18px 0 10px 0;
+            position: relative;
+        }
+        .divider:before, .divider:after {
+            content: '';
+            display: inline-block;
+            width: 35%;
+            height: 1px;
+            background: #282828;
+            vertical-align: middle;
+            margin: 0 6px;
+        }
+        .social-btns {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: transparent;
+            border: 1px solid #b3b3b3;
+            color: #fff;
+            border-radius: 25px;
+            padding: 10px 0;
+            font-size: 1rem;
+            cursor: pointer;
+            justify-content: center;
+            transition: background 0.2s, border 0.2s;
+        }
+        .social-btn:hover {
+            background: #282828;
+            border: 1px solid #fff;
+        }
+        .social-btn img {
+            width: 22px;
+        }
+        .signup-row {
+            margin-top: 15px;
+            color: #b3b3b3;
+            font-size: 0.98rem;
+            text-align: center;
+        }
+        .signup-link {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-left: 6px;
+        }
+        .settings-link {
+            color: #b3b3b3;
+            font-size: 0.92rem;
+            text-align: center;
+            margin-top: 16px;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-modal">
+        <img class="spotify-logo" src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_White.png" alt="Spotify">
+        <div class="login-title">Login to continue.</div>
+        <form class="login-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" class="form-input" name="username" placeholder="Email or username" required>
+            <div class="password-row">
+                <!-- Add this inside your .password-row div, just below the password input -->
+                <div id="error-message" style="color:#ff4d4d; font-size:0.98rem; margin-top:4px; display:none;"></div>
+
+                <input type="password" class="form-input" id="password" name="password" placeholder="Password" required>
+                <span class="toggle-eye" onclick="togglePassword()">&#128065;</span>
+            </div>
+            <a href="#" class="forgot-link">Reset Password</a>
+            <div class="remember-row">
+                <div class="remember-switch" id="rememberSwitch" onclick="toggleRemember()">
+                    <div class="remember-dot"></div>
+                </div>
+                <span class="remember-label">Remember me</span>
+            </div>
+            <button class="login-btn" type="submit">LOG IN</button>
+            <div class="divider">OR</div>
+            <div class="social-btns">
+                <button type="button" class="social-btn"><img src="https://cdn-icons-png.flaticon.com/512/124/124010.png">Continue with Facebook</button>
+                <button type="button" class="social-btn"><img src="https://cdn-icons-png.flaticon.com/512/300/300221.png">Continue with Google</button>
+                <button type="button" class="social-btn"><img src="https://cdn-icons-png.flaticon.com/512/179/179309.png">Continue with Apple</button>
+            </div>
+            <div class="signup-row">
+                Don't have an account?
+                <a class="signup-link" href="/signup">SIGNUP</a>
+            </div>
+        </form>
+        <div class="settings-link">SETTINGS</div>
+    </div>
+    <script>
+        document.querySelector('.login-form').addEventListener('submit', function(e) {
+    // Demo credentials
+    const correctUsername = "demo";
+    const correctPassword = "password123";
+
+    // Use getElementById to get input values
+    const username = document.getElementById('username').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('error-message');
+
+    // Check credentials (replace with server validation in production)
+    if (username !== correctUsername.toLowerCase()) {
+        errorDiv.textContent = "Incorrect username.";
+        errorDiv.style.display = "block";
+        e.preventDefault();
+    } else if (password !== correctPassword) {
+        errorDiv.textContent = "Incorrect password.";
+        errorDiv.style.display = "block";
+        e.preventDefault();
+    } else {
+        errorDiv.style.display = "none";
+        // Allow form to submit
+    }
+});
+
+
+
+    </script>
+    
+</body>
+</html>

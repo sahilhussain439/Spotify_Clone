@@ -1,0 +1,350 @@
+{% extends 'player.html' %}
+{% load static %}
+
+{% block main %}
+<style>
+  body {
+    font-family: 'Circular', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(270deg,
+        #1a1a2e,  /* Dark Indigo */
+        #16213e,  /* Deep Navy */
+        #0f3460,  /* Rich Blue */
+        #3f51b5,  /* Indigo */
+        #512da8,  /* Deep Purple */
+        #2c003e,  /* Plum Purple */
+        #6e1070,  /* Dark Magenta */
+        #172b51,  /* Twilight Blue */
+        #009688,  /* Deep Teal */
+        #263238,  /* Charcoal */
+        #1b262c,  /* Steel Blue */
+        #751c2b91 /* Blood Maroon (semi-transparent) */
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 25s ease infinite;
+    margin: 0;
+    color: white;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.playlist-container {
+    background-color: rgba(0, 0, 0, 0.4); /* semi-transparent dark layer */
+    border-radius: 16px;
+    padding: 32px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin: 20px;
+}
+
+
+    .playlist-heading {
+        font-size: 32px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+    }
+
+    .playlist-subheading {
+        font-size: 14px;
+        color: #b3b3b3;
+        margin-bottom: 32px;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: 360px;
+        padding: 12px 16px;
+        margin-bottom: 32px;
+        border-radius: 8px;
+        border: none;
+        background-color: #222326;
+        color: #fff;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+
+    .search-bar:focus {
+        outline: none;
+        background-color: #333;
+    }
+
+    .playlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 32px;
+    }
+
+    .playlist-card {
+        position: relative;
+        border-radius: 18px;
+        height: 180px;
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        padding: 28px 28px 0 28px;
+        text-decoration: none;
+        color: white;
+        backdrop-filter: blur(8px);
+        overflow: hidden;
+        background: #1c1c1e;
+        box-shadow: 0 2px 16px 0 rgba(83, 2, 2, 0.12);
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        will-change: transform;
+    }
+
+    .playlist-card:hover {
+        transform: translateY(-8px) scale(1.04);
+        cursor: pointer;
+    }
+
+    .playlist-card:hover::after {
+        content: '';
+        position: absolute;
+        top: var(--y, 50%);
+        left: var(--x, 50%);
+        transform: translate(-50%, -50%);
+        width: 120%;
+        height: 120%;
+        pointer-events: none;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 60%);
+        border-radius: 18px;
+        z-index: 1;
+    }
+
+    .playlist-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: #fff;
+        z-index: 2;
+        margin: 0;
+        letter-spacing: -1px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.14);
+    }
+
+    .playlist-img {
+        position: absolute;
+        width: 105px;
+        height: 105px;
+        bottom: 18px;
+        right: 18px;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        transform: rotate(20deg);
+        background: #222;
+        z-index: 0;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid rgba(0,0,0,0.08);
+    }
+
+    .playlist-card:hover .playlist-img {
+        transform: rotate(13deg) scale(1.11);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    }
+
+    @media (max-width: 1024px) {
+        .playlist-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+        .playlist-card {
+            height: 140px;
+            padding: 18px 18px 0 18px;
+        }
+        .playlist-img {
+            width: 70px;
+            height: 70px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .playlist-grid {
+            grid-template-columns: 1fr;
+        }
+        .playlist-card {
+            height: 110px;
+            padding: 12px 12px 0 12px;
+        }
+        .playlist-title {
+            font-size: 17px;
+        }
+        .playlist-img {
+            width: 45px;
+            height: 45px;
+            bottom: 8px;
+            right: 8px;
+        }
+    }
+</style>
+
+
+<div class="playlist-container">
+    <h2 class="playlist-heading">Browse All</h2>
+    <p class="playlist-subheading">Discover music by language, vibe, or genre</p>
+
+    <input type="text" placeholder="Search playlists..." class="search-bar">
+
+    <div class="playlist-grid">
+        <!-- Pop -->
+        <a href="#" class="playlist-card" style="background-color: #5f8aae;">
+            <div class="playlist-title">Pop</div>
+            <img src="https://images.pexels.com/photos/713149/pexels-photo-713149.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Pop">
+        </a>
+        <!-- Indie -->
+        <a href="#" class="playlist-card" style="background-color: #e13300;">
+            <div class="playlist-title">Indie</div>
+            <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Indie">
+        </a>
+        <!-- Love -->
+        <a href="#" class="playlist-card" style="background-color: #dc148c;">
+            <div class="playlist-title">Love</div>
+            <img src="https://images.pexels.com/photos/3694379/pexels-photo-3694379.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Love">
+        </a>
+        <!-- Mood -->
+        <a href="#" class="playlist-card" style="background-color: #ff6437;">
+            <div class="playlist-title">Mood</div>
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Mood">
+        </a>
+        <!-- Party -->
+        <a href="#" class="playlist-card" style="background-color: #8e66ac;">
+            <div class="playlist-title">Party</div>
+            <img src="https://images.pexels.com/photos/1679825/pexels-photo-1679825.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Party">
+        </a>
+        <!-- Devotional -->
+        <a href="#" class="playlist-card" style="background-color: #deb887;">
+            <div class="playlist-title">Devotional</div>
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Devotional">
+        </a>
+        <!-- Hip-Hop -->
+        <a href="#" class="playlist-card" style="background-color: #1e3264;">
+            <div class="playlist-title">Hip-Hop</div>
+            <img src="https://images.pexels.com/photos/713149/pexels-photo-713149.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Hip-Hop">
+        </a>
+        <!-- Dance/Electronic -->
+        <a href="#" class="playlist-card" style="background-color: #777777;">
+            <div class="playlist-title">Dance/Electronic</div>
+            <img src="https://images.pexels.com/photos/1679825/pexels-photo-1679825.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Dance/Electronic">
+        </a>
+        <!-- Student -->
+        <a href="#" class="playlist-card" style="background-color: #9B5DE5;">
+            <div class="playlist-title">Student</div>
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Student">
+        </a>
+        <!-- Country -->
+        <a href="#" class="playlist-card" style="background-color: #e2c275;">
+            <div class="playlist-title">Country</div>
+            <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Country">
+        </a>
+        <!-- Rock -->
+        <a href="#" class="playlist-card" style="background-color: #4d4c7d;">
+            <div class="playlist-title">Rock</div>
+            <img src="https://images.pexels.com/photos/1679825/pexels-photo-1679825.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Rock">
+        </a>
+        <!-- Jazz -->
+        <a href="#" class="playlist-card" style="background-color: #007f5f;">
+            <div class="playlist-title">Jazz</div>
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Jazz">
+        </a>
+        <!-- EDM -->
+        <a href="#" class="playlist-card" style="background-color: #00b4d8;">
+            <div class="playlist-title">EDM</div>
+            <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="EDM">
+        </a>
+        <!-- K-pop -->
+        <a href="#" class="playlist-card" style="background-color: #ffb3c6;">
+            <div class="playlist-title">K-pop</div>
+            <img src="https://images.pexels.com/photos/713149/pexels-photo-713149.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="K-pop">
+        </a>
+        <!-- R&B/Soul -->
+        <a href="#" class="playlist-card" style="background-color: #a3cef1;">
+            <div class="playlist-title">R&amp;B/Soul</div>
+            <img src="https://images.pexels.com/photos/3694379/pexels-photo-3694379.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="R&B/Soul">
+        </a>
+        <!-- Classical -->
+        <a href="#" class="playlist-card" style="background-color: #f9dcc4;">
+            <div class="playlist-title">Classical</div>
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Classical">
+        </a>
+        <!-- Lo-Fi -->
+        <a href="#" class="playlist-card" style="background-color: #b5838d;">
+            <div class="playlist-title">Lo-Fi</div>
+            <img src="https://images.pexels.com/photos/713149/pexels-photo-713149.jpeg?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Lo-Fi">
+        </a>
+        <!-- Chill -->
+        <a href="#" class="playlist-card" style="background-color: #48cae4;">
+            <div class="playlist-title">Chill</div>
+            <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=compress&w=400&q=80"
+                 class="playlist-img"
+                 alt="Chill">
+        </a>
+    </div>
+</div>
+<script>
+    const searchInput = document.querySelector('.search-bar');
+    const cards = document.querySelectorAll('.playlist-card');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+
+        cards.forEach(card => {
+            const title = card.querySelector('.playlist-title').textContent.toLowerCase();
+            if (title.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+    document.querySelectorAll('.playlist-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+    });
+});
+</script>
+
+{% endblock %}
+
